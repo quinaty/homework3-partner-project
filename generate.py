@@ -38,8 +38,29 @@ def generate_expression(value):
     exp = Expression(value, operator, bracket)
     return exp
 
+def generate_equation(r):
+    root = eq.EquationTree(generate_expression(generate_numberic(r)),None,None)
+    current = root
+    parent = None
+    for i in range(4):
+        node = eq.EquationTree(generate_expression(generate_numberic(r)),None,None)
+        if node.expn.operator == Operators.ADD or node.expn.operator == Operators.SUB or (parent.expn.bracket and parent.expn.bracket == Brackets.RIGHT):
+            current.add_right_child(node)
+        else :
+            if node.expn.operator == Operators.MUL or node.expn.operator == Operators.DIV or (node.expn.bracket and node.expn.bracket == Brackets.LEFT):
+                current.add_left_child(node)
 
+        if i == 1:
+            parent = root
+        else:
+         parent = current
+
+        current = node
+
+    return root
 
 
 if __name__ == '__main__':
     r = 10
+    root = generate_equation(r)
+    root.traverse()
