@@ -44,10 +44,10 @@ def generate_equation(r):
     parent = None
     for i in range(4):
         node = eq.EquationTree(generate_expression(generate_numberic(r)),None,None)
-        if node.expn.operator == Operators.ADD or node.expn.operator == Operators.SUB or (parent.expn.bracket and parent.expn.bracket == Brackets.RIGHT):
+        if node.expn.operator == Operators.ADD or node.expn.operator == Operators.SUB or (parent and parent.expn.bracket == Brackets.RIGHT):
             current.add_right_child(node)
         else :
-            if node.expn.operator == Operators.MUL or node.expn.operator == Operators.DIV or (node.expn.bracket and node.expn.bracket == Brackets.LEFT):
+            if node.expn.operator == Operators.MUL or node.expn.operator == Operators.DIV or (node and node.expn.bracket == Brackets.LEFT):
                 current.add_left_child(node)
 
         if i == 1:
