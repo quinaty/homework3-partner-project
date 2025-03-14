@@ -1,6 +1,49 @@
+import enum
+
+class Brackets_Stack:
+    def __init__(self):
+        self.stack = []
+
+    def push(self, bracket):
+        self.stack.append(bracket)
+
+    def pop(self):
+        if len(self.stack) > 0:
+            return self.stack.pop()
+        else:
+            return None
+
+    def is_empty(self):
+        return len(self.stack) == 0
+
+    def length(self):
+        return len(self.stack)
 
 
+class Operators(enum.Enum):
+    ADD = '+'
+    SUB = '-'
+    MUL = '*'
+    DIV = '/'
 
+class Brackets(enum.Enum):
+    LEFT = '('
+    RIGHT = ')'
+    NULL = None
+
+class Numberic:
+    def __init__(self, denominator, numerator):
+        self.denominator = denominator
+        self.numerator = numerator
+
+    def get_value(self):
+        return self.numerator/self.denominator
+
+class Expression:
+    def __init__(self, value, operator , bracket=Brackets.NULL):
+        self.value = value
+        self.operator = operator
+        self.bracket = bracket
 
 class EquationTree:
     def __init__(self, expn, left, right, parent=None):
@@ -22,4 +65,5 @@ class EquationTree:
             self.left.traverse()
         if self.right is not None:
             self.right.traverse()
+
 
