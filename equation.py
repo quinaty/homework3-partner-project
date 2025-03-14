@@ -67,3 +67,29 @@ class EquationTree:
             self.right.traverse()
 
 
+    def evaluate(self):
+        value = 0
+        operator = Operators.ADD
+        is_get_value = False
+        if self.left is not None:
+            value = self.left.evaluate()
+            operator = self.left.expn.operator
+            is_get_value = True
+        if self.right is not None:
+            value = self.right.evaluate()
+            operator = self.right.expn.operator
+            is_get_value = True
+
+        match operator:
+            case Operators.ADD:
+                return  self.expn.value.get_value() + value
+            case Operators.SUB:
+                return  self.expn.value.get_value() - value
+            case Operators.MUL:
+                if not is_get_value:
+                    value = 1
+                return  self.expn.value.get_value() * value
+            case Operators.DIV:
+                if not is_get_value:
+                    value = 1
+                return  self.expn.value.get_value() / value
