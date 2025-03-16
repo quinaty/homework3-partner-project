@@ -23,9 +23,11 @@ def generate_expression(value,is_root=False):
     exp = eq.Expression(value, operator, bracket)
     return exp
 
-def generate_expression_node(r, current, parent):
+def generate_expression_node(r):
     node = eq.EquationTree(generate_expression(generate_numberic(r)), None, None)
+    return node
 
+def node_add(node, current, parent):
     if node.expn.operator == eq.Operators.ADD or node.expn.operator == eq.Operators.SUB or (
             parent and parent.expn.bracket == eq.Brackets.RIGHT):
         current.add_right_child(node)
@@ -33,8 +35,6 @@ def generate_expression_node(r, current, parent):
         if node.expn.operator == eq.Operators.MUL or node.expn.operator == eq.Operators.DIV or (
                 node and node.expn.bracket == eq.Brackets.LEFT):
             current.add_left_child(node)
-
-    return node
 
 
 def bracket_check(node, stack, remain_num):
@@ -63,7 +63,7 @@ def generate_equation_tree(r,limit = 4):
 
     while expression_count < limit :
 
-        node = generate_expression_node(r, current, current.parent)
+        node = generate_expression_node(r)
 
         if bracket_check(node, stack, limit - expression_count):
             if node.expn.bracket == eq.Brackets.LEFT:
@@ -76,12 +76,14 @@ def generate_equation_tree(r,limit = 4):
             else:
                 node.parent = current
 
-            current = node
+            node_add(node, current, current.parent)
+
+
+            if not current.right is None:
+                current = node
             expression_count += 1
 
         else:
-            current.left = None
-            current.right = None
             continue
 
     return root
