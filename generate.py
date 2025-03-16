@@ -40,5 +40,6 @@ class Generator:
 if __name__ == '__main__':
     g = Generator(10, 4)
     tree = g.generate_equation_tree(g.depth)
+    tree.normalize()
     tree.traverse()
     print(tree.evaluate())
