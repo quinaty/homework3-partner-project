@@ -37,3 +37,21 @@ class EquationNode:
         else:
             print(self.value)
 
+    def match_operator(self, operator,value1, value2):
+        match operator:
+            case Operators.ADD:
+                return value1 + value2
+            case Operators.SUB:
+                return value1 - value2
+            case Operators.MUL:
+                return value1 * value2
+            case Operators.DIV:
+                return value1 / value2
+
+    def evaluate(self):
+        if not self.left and not self.right:
+            return self.value.get_value()
+        elif self.left:
+            value1 = self.left.evaluate()
+            value2 = self.right.evaluate()
+            return self.match_operator(self.value, value1, value2)
