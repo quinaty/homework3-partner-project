@@ -8,9 +8,14 @@ class Generator:
         self.limit = limit
         self.depth = math.ceil(self.limit / 2)
 
+    #生成数字
     def generate_numberic(self):
         denominator = random.randint(1,self.r)
         numerator = random.randint(0, self.r)
+            #提高整数的生成概率
+        if random.random() < 0.7:
+            denominator = 1
+
         numberic = eq.Numberic(denominator, numerator)
         return numberic
 
