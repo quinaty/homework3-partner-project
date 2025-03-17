@@ -37,9 +37,20 @@ class Generator:
 
             return node
 
+def generate_equations(r, limit,n):
+    equation_set = set()
+    answer_set = set()
+    g = Generator(r, limit)
+    i = 0
+    while i < n:
+        tree = g.generate_equation_tree(g.depth)
+        tree.normalize()
+        answer = tree.evaluate()
+        if answer > 0:
+            equation_set.add(tree)
+            answer_set.add(answer)
+            i += 1
+
+
 if __name__ == '__main__':
-    g = Generator(10, 4)
-    tree = g.generate_equation_tree(g.depth)
-    tree.normalize()
-    tree.traverse()
-    print(tree.evaluate())
+    generate_equations(10, 10, 10)

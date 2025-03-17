@@ -60,7 +60,10 @@ class EquationNode:
             case Operators.MUL:
                 return value1 * value2
             case Operators.DIV:
-                return value1 / value2
+                try:
+                    return  value1 / value2
+                except ZeroDivisionError:
+                    return float(-1)
 
     def evaluate(self):
         if not self.left and not self.right:
