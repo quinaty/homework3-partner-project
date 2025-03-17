@@ -145,12 +145,12 @@ class EquationNode:
         return self.order
 
 class EquationSet:
-    def __init__(self, equation_set,answer_set):
-        self.equation_set = equation_set
-        self.answer_set = answer_set
+    def __init__(self, equation_list, answer_dict):
+        self.equation_list = equation_list
+        self.answer_dict = answer_dict
 
     def print_equation_set(self):
-        for equation in self.equation_set:
+        for equation in self.equation_list:
             equation.print_equation()
             print('=',end=' ')
-            print(equation.evaluate())
+            print(self.answer_dict[equation])

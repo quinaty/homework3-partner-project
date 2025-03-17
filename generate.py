@@ -39,8 +39,8 @@ class Generator:
 
 def generate_equations(r, limit,n):
 
-    equation_set = set()
-    answer_set = set()
+    equation_set = list()
+    answer_set = dict()
     g = Generator(r, limit)
 
     i = 0
@@ -51,8 +51,8 @@ def generate_equations(r, limit,n):
         tree.normalize()
         answer = tree.evaluate()
         if answer > 0:
-            equation_set.add(tree)
-            answer_set.add(answer)
+            equation_set.append(tree)
+            answer_set[tree] = answer
             i += 1
 
     es = eq.EquationSet(equation_set, answer_set)
