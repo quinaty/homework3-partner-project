@@ -2,6 +2,9 @@ import random
 import equation as eq
 import math
 
+
+
+
 class Generator:
     def __init__(self, r, limit):
         self.r = r
@@ -38,12 +41,16 @@ class Generator:
             return node
 
 def generate_equations(r, limit,n):
+
     equation_set = set()
     answer_set = set()
     g = Generator(r, limit)
+
     i = 0
     while i < n:
-        tree = g.generate_equation_tree(g.depth)
+        depth = g.depth
+        g.limit = limit
+        tree = g.generate_equation_tree(depth)
         tree.normalize()
         answer = tree.evaluate()
         if answer > 0:
@@ -51,6 +58,10 @@ def generate_equations(r, limit,n):
             answer_set.add(answer)
             i += 1
 
+    es = eq.EquationSet(equation_set, answer_set)
+    return es
+
 
 if __name__ == '__main__':
-    generate_equations(10, 10, 10)
+        es = generate_equations(10, 4, 10)
+        es.print_equation_set()

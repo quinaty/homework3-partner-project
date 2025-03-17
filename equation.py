@@ -6,6 +6,12 @@ class Operators(enum.Enum):
     MUL = '*'
     DIV = '/'
 
+    def get_value(self):
+        if self == Operators.ADD or self == Operators.SUB:
+            return 0
+        elif self == Operators.MUL or self == Operators.DIV:
+            return 1
+
 class Numberic:
     def __init__(self, denominator, numerator):
         self.denominator = denominator
@@ -40,16 +46,26 @@ class EquationNode:
     def add_right_child(self, child):
         self.right = child
 
-    def traverse(self):
+    def print_equation(self):
         if self.left:
-            self.left.traverse()
-        if self.right:
-            self.right.traverse()
+            self.left.print_equation()
 
         if type(self.value) == Numberic:
-            print(self.value.get_value())
+            print(self.value.get_value(),end=' ')
         else:
-            print(self.value)
+           match self.value:
+                case Operators.ADD:
+                   print('+',end=' ')
+                case Operators.SUB:
+                    print('-',end=' ')
+                case Operators.MUL:
+                    print('*',end=' ')
+                case Operators.DIV:
+                    print('/',end=' ')
+
+        if self.right:
+            self.right.print_equation()
+
 
     def match_operator(self, operator,value1, value2):
         match operator:
@@ -68,10 +84,17 @@ class EquationNode:
     def evaluate(self):
         if not self.left and not self.right:
             return self.value.get_value()
-        elif self.left:
+        if self.left:
             value1 = self.left.evaluate()
+        else:
+            value1 = self.value.get_value()
+
+        if self.right:
             value2 = self.right.evaluate()
-            return self.match_operator(self.value, value1, value2)
+        else:
+            value2 = self.value.get_value()
+
+        return self.match_operator(self.value, value1, value2)
 
     def normalize(self):
         if self.left:
@@ -94,4 +117,12 @@ class EquationNode:
 
         return self.order
 
+class EquationSet:
+    def __init__(self, equation_set,answer_set):
+        self.equation_set = equation_set
+        self.answer_set = answer_set
 
+    def print_equation_set(self):
+        for equation in self.equation_set:
+            equation.print_equation()
+            print('=')
