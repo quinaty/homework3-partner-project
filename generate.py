@@ -65,5 +65,5 @@ def generate_equations(r, limit,n):
 
 
 if __name__ == '__main__':
-        es = generate_equations(10, 4, 1)
+        es = generate_equations(10, 4, 10)
         es.print_equation_set()

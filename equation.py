@@ -30,26 +30,26 @@ class Numberic:
             return -1
 
     def print_numberic(self):
-        # if self.denominator == 1:
-        #     return int(self.numerator)
-        # elif self.numerator == 0:
-        #     return 0
-        #
-        # if self.numerator == self.denominator:
-        #     return 1
-        # elif self.numerator < self.denominator:
-        #     return str(self.numerator) + '/' + str(self.denominator)
-        # else:
-        #     x = self.numerator % self.denominator
-        #     y = self.numerator // self.denominator
-        #     if x == 0:
-        #         return str(y)
-        #     else:
-        #         return str(str(y) + '\'' + str(x) + '/' + str(self.denominator))
+        if self.denominator == 1:
+            return int(self.numerator)
+        elif self.numerator == 0:
+            return 0
 
-        x = self.numerator % self.denominator
-        y = self.numerator // self.denominator
-        return str(str(y) + '\'' + str(x) + '/' + str(self.denominator))
+        if self.numerator == self.denominator:
+            return 1
+        elif self.numerator < self.denominator:
+            return str(self.numerator) + '/' + str(self.denominator)
+        else:
+            x = self.numerator % self.denominator
+            y = self.numerator // self.denominator
+            if x == 0:
+                return str(y)
+            else:
+                return str(str(y) + '\'' + str(x) + '/' + str(self.denominator))
+
+        # x = self.numerator % self.denominator
+        # y = self.numerator // self.denominator
+        # return str(str(y) + '\'' + str(x) + '/' + str(self.denominator))
 
 
 class EquationNode:
@@ -80,13 +80,13 @@ class EquationNode:
 
     def print_equation(self,pos = 0,op = 0):
         if self.left:
-            self.left.print_equation(0,self.value.get_type())
+            self.left.print_equation(0,self.value.get_type() + op)
 
         if type(self.value) == Numberic:
-            if pos == 0 and op == 0:
+            if pos == 0 and op > 1:
                 print('(',end=' ')
                 print(self.value.print_numberic(),end=' ')
-            elif pos == 1 and op == 0:
+            elif pos == 1 and op > 1:
                 print(self.value.print_numberic(),end=' ')
                 print(')',end=' ')
             else:
@@ -104,7 +104,7 @@ class EquationNode:
                     print('/',end=' ')
 
         if self.right:
-            self.right.print_equation(1,self.value.get_type())
+            self.right.print_equation(1,self.value.get_type() + op)
 
     def evaluate(self):
         if not self.left and not self.right:
@@ -119,12 +119,13 @@ class EquationNode:
         else:
             value2 = self.value.get_value()
 
-        resutl = simplify_fraction_evaluate(value1, value2, self.value)
-        # print('##',end=' ')
-        # print(resutl.print_numberic(),end=' ')
-        # print('##')
+        # print(
+        #     f"操作数1: {value1.numerator}/{value1.denominator} 操作符: {self.value.value} 操作数2: {value2.numerator}/{value2.denominator}")  # 添加调试输出
+        result = simplify_fraction_evaluate(value1, value2, self.value)
 
-        return resutl
+        if result.get_value() < 0:
+            return Numberic(1, -1)
+        return result
 
     def normalize(self):
         if self.left:
@@ -154,7 +155,7 @@ class EquationSet:
 
     def print_equation_set(self):
         for equation in self.equation_list:
-            equation.print_equation()
+            equation.print_equation(0,equation.value.get_type())
             print('=',end=' ')
             print(self.answer_dict[equation])
 
@@ -166,17 +167,18 @@ def greatest_common_divisor(a, b):
     return a
 
 def simplify_fraction_evaluate(fraction1, fraction2, operator):
-    # 求最小公倍数
-    common_divisor = greatest_common_divisor(fraction1.denominator, fraction2.denominator)
-    if common_divisor <= 0:
-        return Numberic(1, -1)
+    denominator = 1
+    numerator1 = 0
+    numerator2 = 0
+    if operator == Operators.ADD or operator == Operators.SUB:
+       # 求最小公倍数
+       common_divisor = greatest_common_divisor(fraction1.denominator, fraction2.denominator)
+       # 分母通分
+       denominator = (fraction1.denominator * fraction2.denominator) // common_divisor
 
-    # 分母通分
-    denominator = (fraction1.denominator * fraction2.denominator) // common_divisor
-
-    # 分子通分
-    fraction1.numerator *= (denominator // fraction1.denominator)
-    fraction2.numerator *= (denominator // fraction2.denominator)
+       # 分子通分
+       numerator1 = fraction1.numerator * (denominator // fraction1.denominator)
+       numerator2 = fraction2.numerator * (denominator // fraction2.denominator)
 
     if denominator == 0:
         return Numberic(1, -1)
@@ -184,9 +186,9 @@ def simplify_fraction_evaluate(fraction1, fraction2, operator):
 
     match operator:
         case Operators.ADD:
-            return Numberic(denominator, fraction1.numerator + fraction2.numerator)
+            return Numberic(denominator, numerator1 + numerator2)
         case Operators.SUB:
-            return Numberic(denominator, fraction1.numerator - fraction2.numerator)
+            return Numberic(denominator, numerator1 - numerator2)
         case Operators.MUL:
             return Numberic(fraction1.denominator * fraction2.denominator, fraction1.numerator * fraction2.numerator)
         case Operators.DIV:
