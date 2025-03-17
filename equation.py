@@ -25,14 +25,19 @@ class Numberic:
             return int(self.numerator)
         elif self.numerator == 0:
             return 0
-        elif self.numerator > self.denominator:
+
+        if self.numerator == self.denominator:
+            return 1
+        elif self.numerator < self.denominator:
+            return str(self.numerator) + '/' + str(self.denominator)
+        else:
             x = self.numerator % self.denominator
             y = self.numerator // self.denominator
-            return str(str(y)+'\''+str(x)+'/'+str(self.denominator))
-        elif self.numerator == self.denominator:
-            return 1
-        else:
-            return str(self.numerator) + '/' + str(self.denominator)
+            if x == 0:
+                return str(y)
+            else:
+                return str(str(y) + '\'' + str(x) + '/' + str(self.denominator))
+
 
 class EquationNode:
     def __init__(self, value, left, right):
