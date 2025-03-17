@@ -20,6 +20,20 @@ class Numberic:
     def get_value(self):
         return self.numerator/self.denominator
 
+    def print_numberic(self):
+        if self.denominator == 1:
+            return int(self.numerator)
+        elif self.numerator == 0:
+            return 0
+        elif self.numerator > self.denominator:
+            x = self.numerator % self.denominator
+            y = self.numerator // self.denominator
+            return str(str(y)+'\''+str(x)+'/'+str(self.denominator))
+        elif self.numerator == self.denominator:
+            return 1
+        else:
+            return str(self.numerator) + '/' + str(self.denominator)
+
 class EquationNode:
     def __init__(self, value, left, right):
         self.value = value
@@ -46,12 +60,20 @@ class EquationNode:
     def add_right_child(self, child):
         self.right = child
 
-    def print_equation(self):
+    def print_equation(self,pos = 0,op = 0):
         if self.left:
-            self.left.print_equation()
+            self.left.print_equation(0,self.value.get_value())
 
         if type(self.value) == Numberic:
-            print(self.value.get_value(),end=' ')
+            if pos == 0 and op == 0:
+                print('(',end=' ')
+                print(self.value.print_numberic(),end=' ')
+            elif pos == 1 and op == 0:
+                print(self.value.print_numberic(),end=' ')
+                print(')',end=' ')
+            else:
+                print(self.value.print_numberic(),end=' ')
+
         else:
            match self.value:
                 case Operators.ADD:
@@ -64,7 +86,7 @@ class EquationNode:
                     print('/',end=' ')
 
         if self.right:
-            self.right.print_equation()
+            self.right.print_equation(1,self.value.get_value())
 
 
     def match_operator(self, operator,value1, value2):
@@ -125,4 +147,5 @@ class EquationSet:
     def print_equation_set(self):
         for equation in self.equation_set:
             equation.print_equation()
-            print('=')
+            print('=',end=' ')
+            print(equation.evaluate())

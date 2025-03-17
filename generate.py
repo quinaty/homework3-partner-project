@@ -2,9 +2,6 @@ import random
 import equation as eq
 import math
 
-
-
-
 class Generator:
     def __init__(self, r, limit):
         self.r = r
