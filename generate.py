@@ -55,9 +55,9 @@ def generate_equations(r, limit,n):
         tree = g.generate_equation_tree(depth)
         tree.normalize()
         answer = tree.evaluate()
-        if answer > 0:
+        if answer.get_value() > 0:
             equation_set.append(tree)
-            answer_set[tree] = answer
+            answer_set[tree] = answer.print_numberic()
             i += 1
 
     es = eq.EquationSet(equation_set, answer_set)
@@ -65,5 +65,5 @@ def generate_equations(r, limit,n):
 
 
 if __name__ == '__main__':
-        es = generate_equations(10, 4, 10)
+        es = generate_equations(10, 4, 1)
         es.print_equation_set()
