@@ -53,6 +53,27 @@ def file_write(file_path, data):
         print(f"写入文件时发生未知错误：{str(e)}")
 
 
+def single_numeric_read(answer_txt):
+    pattern = re.compile(r'\d+[\'\d/\d]*?')
+    an = re.match(pattern, answer_txt)
+    if an is None:
+        print("答案格式错误")
+        return None
+    else:
+
+        if an == '':
+            return None
+
+        an = re.sub(r'\D', ' ', answer_txt)
+        num_list = an.split()
+        if len(num_list) == 1:
+            return eq.Numberic(1, int(num_list[0]))
+        elif len(num_list) == 2:
+            return eq.Numberic(int(num_list[1]), int(num_list[0]))
+        else:
+            return eq.Numberic(int(num_list[2]), int(num_list[1]) + int(num_list[0]) * int(num_list[2]))
+
+
 def answer_read(answer_path):
     answer_data = file_read(answer_path)
     if answer_data is None:
@@ -63,29 +84,42 @@ def answer_read(answer_path):
     while '' in answer_list:
         answer_list.remove('')
 
-    pattern = re.compile(r'\d+[\'\d/\d]*?')
     answer_set = list()
 
     for answer in answer_list:
-        an = re.match(pattern, answer)
-        if an is None:
-            print("答案格式错误")
-            return None
+        an = single_numeric_read(answer)
+        if an:
+            answer_set.append(an)
         else:
-
-            if an == '':
-                continue
-
-            an = re.sub(r'\D', ' ', answer)
-            num_list = an.split()
-            if len(num_list) == 1:
-                answer_set.append(eq.Numberic(1, int(num_list[0])))
-            elif len(num_list) == 2:
-                answer_set.append(eq.Numberic(int(num_list[1]), int(num_list[0])))
-            else:
-                answer_set.append(eq.Numberic(int(num_list[2]),int(num_list[1]) + int(num_list[0]) * int(num_list[2])))
+            continue
 
     return answer_set
+
+def question_read(question_path):
+    question_data = file_read(question_path)
+    if question_data is None:
+        return None
+    else:
+        question_list = question_data.split('\n')
+
+    while '' in question_list:
+        question_list.remove('')
+
+    pattern1 = re.compile(r'\d+[\'\d/\d]*?')
+    pattern2 = re.compile(r'[(+\-*/)]')
+    question_set = list()
+
+    for question in question_set:
+        num = re.match(pattern1,question)
+        operator = re.match(pattern2,question)
+
+
+
+
+
+
+
+
 
 
 
