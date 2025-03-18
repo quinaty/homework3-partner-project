@@ -4,17 +4,19 @@ import equation as eq
 
 const_answer_path = "D:\\qe\\Documents\\PythonProgrammes\\homework3\\answer.txt"
 const_question_path = "D:\\qe\\Documents\\PythonProgrammes\\homework3\\question.txt"
+const_grade_path = "D:\\qe\\Documents\\PythonProgrammes\\homework3\\grade.txt"
 
 # 从命令行读取文件
 def read_file_from_args():
     parser = argparse.ArgumentParser(description='从命令行读取文件')
 
     #分别读取问题、答案文件的路径
-    parser.add_argument('question_file',type=str)
-    parser.add_argument('answer_file',type=str)
+    parser.add_argument('question_file','-e' ,type=str)
+    parser.add_argument('answer_file','-a',type=str)
+    parser.add_argument('grade_file',type=str)
 
     args = parser.parse_args()
-    return [args.question_file, args.answer_file]
+    return [args.question_file, args.answer_file, args.grade_file]
 
 
 # 读取文件内容
@@ -79,11 +81,12 @@ def file_close(file_obj):
     except Exception as e:
         print(f"关闭文件时发生未知错误：{str(e)}")
 
-def equation_write(equation,file_path):
+def equation_write(equation,file_path,index):
     if not file_path:
         file_path = const_question_path
 
     file = file_open(file_path)
+    file.write(str(index) + '. ')
     equation.print_equation(0, equation.value.get_type(), file)
     file.write('\n')
     file_close(file)
