@@ -7,14 +7,18 @@ class Operators(enum.Enum):
     DIV = '/'
 
     def get_value(self):
+        #处理叶子节点缺失的情况
         if self == Operators.ADD or self == Operators.SUB:
             return Numberic(1,0)
         elif self == Operators.MUL or self == Operators.DIV:
             return Numberic(1,1)
 
     def get_type(self):
-        if self == Operators.ADD or self == Operators.SUB:
+        #获取操作符的优先级
+        if self == Operators.ADD:
             return 0
+        elif self == Operators.SUB:
+            return 1
         elif self == Operators.MUL or self == Operators.DIV:
             return 1
 
@@ -30,6 +34,7 @@ class Numberic:
             return -1
 
     def print_numberic(self):
+        # 输出真分数形式的数字
         if self.denominator == 1:
             return int(self.numerator)
         elif self.numerator == 0:
@@ -79,9 +84,17 @@ class EquationNode:
         self.right = child
 
     def print_equation(self,pos = 0,op = 0):
-        if self.left:
-            self.left.print_equation(0,self.value.get_type() + op)
+        #左边算式优先级大于或等于右边算式优先级时，左括号不加
+        #左边算式优先级小于右边算式优先级时，左括号加
+        if type(self.value) == Operators and op < self.value.get_type() :
+            op1 = 0
+        else:
+            op1 = op
 
+        if self.left:
+            self.left.print_equation(0,self.value.get_type() + op1)
+
+        #打印操作符与操作数
         if type(self.value) == Numberic:
             if pos == 0 and op > 1:
                 print('(',end=' ')
@@ -107,6 +120,7 @@ class EquationNode:
             self.right.print_equation(1,self.value.get_type() + op)
 
     def evaluate(self):
+        #递归求值
         if not self.left and not self.right:
             return self.value
         if self.left:
@@ -125,9 +139,15 @@ class EquationNode:
 
         if result.get_value() < 0:
             return Numberic(1, -1)
+        #对结果进行化简
+        common_divisor = greatest_common_divisor(result.numerator, result.denominator)
+        result.numerator //= common_divisor
+        result.denominator //= common_divisor
         return result
 
     def normalize(self):
+        #标准化
+        #使得左子树的优先级大于右子树的优先级，且左叶子始终大于右叶子
         if self.left:
             l_order = self.left.normalize()
         else:
@@ -149,6 +169,7 @@ class EquationNode:
         return self.order
 
 class EquationSet:
+    # 方程集合
     def __init__(self, equation_list, answer_dict):
         self.equation_list = equation_list
         self.answer_dict = answer_dict
@@ -183,7 +204,7 @@ def simplify_fraction_evaluate(fraction1, fraction2, operator):
     if denominator == 0:
         return Numberic(1, -1)
 
-
+    # 计算结果
     match operator:
         case Operators.ADD:
             return Numberic(denominator, numerator1 + numerator2)
