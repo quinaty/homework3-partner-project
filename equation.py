@@ -83,7 +83,7 @@ class EquationNode:
     def add_right_child(self, child):
         self.right = child
 
-    def print_equation(self,pos = 0,op = 0):
+    def print_equation(self,pos = 0,op = 0,file = None):
         #左边算式优先级大于或等于右边算式优先级时，左括号不加
         #左边算式优先级小于右边算式优先级时，左括号加
         if type(self.value) == Operators and op < self.value.get_type() :
@@ -92,32 +92,33 @@ class EquationNode:
             op1 = op
 
         if self.left:
-            self.left.print_equation(0,self.value.get_type() + op1)
+            self.left.print_equation(0,self.value.get_type() + op1,file)
 
         #打印操作符与操作数
         if type(self.value) == Numberic:
+            output = self.value.print_numberic()
             if pos == 0 and op > 1:
-                print('(',end=' ')
-                print(self.value.print_numberic(),end=' ')
+               line = f"( {output} "
             elif pos == 1 and op > 1:
-                print(self.value.print_numberic(),end=' ')
-                print(')',end=' ')
+               line = f"{output} ) "
             else:
-                print(self.value.print_numberic(),end=' ')
+                line = f"{output} "
+
+            if file:
+                file.write(line)
+            else :
+                print(line,end=' ')
 
         else:
-           match self.value:
-                case Operators.ADD:
-                   print('+',end=' ')
-                case Operators.SUB:
-                    print('-',end=' ')
-                case Operators.MUL:
-                    print('*',end=' ')
-                case Operators.DIV:
-                    print('/',end=' ')
+            oprator = self.value.value
+
+            if file:
+                file.write(oprator+' ')
+            else :
+                print(oprator,end=' ')
 
         if self.right:
-            self.right.print_equation(1,self.value.get_type() + op)
+            self.right.print_equation(1,self.value.get_type() + op,file)
 
     def evaluate(self):
         #递归求值

@@ -71,5 +71,11 @@ if __name__ == '__main__':
         for answer in es.answer_dict.values():
             fp.file_write(fp.const_answer_path, str(answer)+'\n')
 
+        for equation in es.equation_list:
+            file = fp.file_open(fp.const_question_path)
+            equation.print_equation(0,equation.value.get_type(),file)
+            file.write('\n')
+            fp.file_close(file)
+
         for answer in fp.answer_read(fp.const_answer_path):
             print(answer.print_numberic())

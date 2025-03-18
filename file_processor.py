@@ -3,6 +3,7 @@ import re
 import equation as eq
 
 const_answer_path = "D:\qe\Documents\PythonProgrammes\homework3\\answer.txt"
+const_question_path = "D:\qe\Documents\PythonProgrammes\homework3\\question.txt"
 
 # 从命令行读取文件
 def read_file_from_args():
@@ -51,6 +52,32 @@ def file_write(file_path, data):
         print("错误：文件编码不支持，请尝试指定其他编码方式")
     except Exception as e:
         print(f"写入文件时发生未知错误：{str(e)}")
+
+
+def file_open(file_path):
+    try:
+        return open(file_path, 'a+', encoding='utf-8')
+    except FileNotFoundError:
+        print(f"错误：文件 '{file_path}' 不存在")
+        return None
+    except IsADirectoryError:
+        print(f"错误：'{file_path}' 是一个目录")
+        return None
+    except PermissionError:
+        print(f"错误：没有权限写入 '{file_path}'")
+        return None
+    except UnicodeDecodeError:
+        print("错误：文件编码不支持，请尝试指定其他编码方式")
+        return None
+    except Exception as e:
+        print(f"打开文件时发生未知错误：{str(e)}")
+        return None
+
+def file_close(file_obj):
+    try:
+        file_obj.close()
+    except Exception as e:
+        print(f"关闭文件时发生未知错误：{str(e)}")
 
 
 def single_numeric_read(answer_txt):
