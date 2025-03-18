@@ -2,8 +2,8 @@ import argparse
 import re
 import equation as eq
 
-const_answer_path = "D:\qe\Documents\PythonProgrammes\homework3\\answer.txt"
-const_question_path = "D:\qe\Documents\PythonProgrammes\homework3\\question.txt"
+const_answer_path = "D:\\qe\\Documents\\PythonProgrammes\\homework3\\answer.txt"
+const_question_path = "D:\\qe\\Documents\\PythonProgrammes\\homework3\\question.txt"
 
 # 从命令行读取文件
 def read_file_from_args():
@@ -79,6 +79,15 @@ def file_close(file_obj):
     except Exception as e:
         print(f"关闭文件时发生未知错误：{str(e)}")
 
+def equation_write(equation,file_path):
+    if not file_path:
+        file_path = const_question_path
+
+    file = file_open(file_path)
+    equation.print_equation(0, equation.value.get_type(), file)
+    file.write('\n')
+    file_close(file)
+
 
 def single_numeric_read(answer_txt):
     pattern = re.compile(r'\d+[\'\d/\d]*?')
@@ -123,22 +132,74 @@ def answer_read(answer_path):
     return answer_set
 
 def question_read(question_path):
+    # 读取问题文件
     question_data = file_read(question_path)
     if question_data is None:
         return None
     else:
         question_list = question_data.split('\n')
-
+    # 去除空行
     while '' in question_list:
         question_list.remove('')
 
-    pattern1 = re.compile(r'\d+[\'\d/\d]*?')
-    pattern2 = re.compile(r'[(+\-*/)]')
+    pattern = r"""
+        \d+'\d+/\d+    # 带分数如 1'1/3
+        |\d+/\d+       # 分数如 3/4
+        |\d+           # 整数如 12
+        |[-+*/()]      # 运算符和括号
+    """
     question_set = list()
+    # 运算符优先级
+    precedence = {'+': 0, '-': 1, '*': 2, '/': 3, '(': -1, ')': -1}
 
-    for question in question_set:
-        num = re.match(pattern1,question)
-        operator = re.match(pattern2,question)
+    # 构建表达式树
+    for question in question_list:
+        qu = re.findall(pattern, question, re.VERBOSE)
+
+        #分离运算符和数字
+        tokens = []
+        num_stack = []
+        op_stack = []
+        for token in qu:
+            if token not in ['+', '-', '*', '/', '(', ')']:
+                tokens.append(single_numeric_read(token))
+            else:
+                tokens.append(token)
+        #使用双栈法构建表达式树
+        for token in tokens:
+            if isinstance(token, eq.Numberic):
+                num_stack.append(eq.EquationNode(token, None, None))#数字直接入栈
+            elif token == '(':
+                op_stack.append(token)#左括号入栈
+            elif token == ')':
+                while op_stack[-1] != '(':
+                    build_tree(op_stack, num_stack)#右括号出栈，直到左括号
+                op_stack.pop()#左括号出栈
+            else:
+                while op_stack and precedence[op_stack[-1]] >= precedence[token]:
+                    build_tree(op_stack, num_stack)#运算符出栈，直到栈空或优先级低于当前运算符
+                op_stack.append(token)#当前运算符入栈
+
+        while op_stack:#栈非空时，将剩余运算符出栈，直到栈空
+                build_tree(op_stack, num_stack)
+
+        question_set.append( num_stack[0])
+
+    return question_set
+
+# 构建表达式树
+def build_tree(op_stack, num_stack):
+    op = op_stack.pop()
+    right = num_stack.pop()
+    left = num_stack.pop()
+
+    operator = None
+    match op:
+        case '+': operator = eq.Operators.ADD
+        case '-': operator = eq.Operators.SUB
+        case '*': operator = eq.Operators.MUL
+        case '/': operator = eq.Operators.DIV
+    num_stack.append(eq.EquationNode(operator, left, right))
 
 
 
