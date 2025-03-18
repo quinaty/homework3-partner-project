@@ -2,6 +2,8 @@ import argparse
 import re
 import equation as eq
 
+const_answer_path = "D:\qe\Documents\PythonProgrammes\homework3\\answer.txt"
+
 # 从命令行读取文件
 def read_file_from_args():
     parser = argparse.ArgumentParser(description='从命令行读取文件')
@@ -51,12 +53,15 @@ def file_write(file_path, data):
         print(f"写入文件时发生未知错误：{str(e)}")
 
 
-def answer_read(answer_file):
-    answer_data = file_read(answer_file)
+def answer_read(answer_path):
+    answer_data = file_read(answer_path)
     if answer_data is None:
         return None
     else:
         answer_list = answer_data.split('\n')
+    # 去除空行
+    while '' in answer_list:
+        answer_list.remove('')
 
     pattern = re.compile(r'\d+[\'\d/\d]*?')
     answer_set = list()
@@ -67,14 +72,18 @@ def answer_read(answer_file):
             print("答案格式错误")
             return None
         else:
-            an = re.sub(r'[\D]', '', answer)
-            an = str(an).split('')
-            if len(an) == 1:
-                answer_set.append(eq.Numberic(1, int(an[0])))
-            elif len(an) == 2:
-                answer_set.append(eq.Numberic(int(an[1]), int(an[0])))
+
+            if an == '':
+                continue
+
+            an = re.sub(r'\D', ' ', answer)
+            num_list = an.split()
+            if len(num_list) == 1:
+                answer_set.append(eq.Numberic(1, int(num_list[0])))
+            elif len(num_list) == 2:
+                answer_set.append(eq.Numberic(int(num_list[1]), int(num_list[0])))
             else:
-                answer_set.append(eq.Numberic(int(an[2])*int(an[0]),int(an[1])))
+                answer_set.append(eq.Numberic(int(num_list[2]),int(num_list[1]) + int(num_list[0]) * int(num_list[2])))
 
     return answer_set
 

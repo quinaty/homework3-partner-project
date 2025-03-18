@@ -1,6 +1,7 @@
 import random
 import equation as eq
 import math
+import file_processor as fp
 
 class Generator:
     def __init__(self, r, limit):
@@ -66,4 +67,9 @@ def generate_equations(r, limit,n):
 
 if __name__ == '__main__':
         es = generate_equations(10, 4, 10)
-        es.print_equation_set()
+       # es.print_equation_set()
+        for answer in es.answer_dict.values():
+            fp.file_write(fp.const_answer_path, str(answer)+'\n')
+
+        for answer in fp.answer_read(fp.const_answer_path):
+            print(answer.print_numberic())
