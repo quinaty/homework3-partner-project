@@ -62,11 +62,17 @@ def generate_equations(r, limit,n):
             i += 1
 
     es = eq.EquationSet(equation_set, answer_set)
-    return es
+
+
+    i = 0
+    for equation in es.answer_dict.keys():
+        fp.equation_write(equation, fp.const_exercises_path, i+1)
+        i += 1
+
 
 
 if __name__ == '__main__':
-        es = generate_equations(10, 4, 2)
+     es = generate_equations(10, 4, 2)
        # es.print_equation_set()
        #  for answer in es.answer_dict.values():
        #      fp.file_write(fp.const_answer_path, str(answer)+'\n')
