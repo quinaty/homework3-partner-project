@@ -6,6 +6,9 @@ def proofread_the_answers(question, answer):
 def proofread_the_questions(question_path, answer_path, grade_path):
     questions = fp.question_read(question_path)
     answers = fp.answer_read(answer_path)
+
+    if grade_path is None:
+        grade_path = fp.const_grade_path
     grade_file = fp.file_open(grade_path)
 
     correct_num = 0
@@ -22,16 +25,16 @@ def proofread_the_questions(question_path, answer_path, grade_path):
 
     grade_file.write(f"Correct：{correct_num}(")
     for i in correct_list:
-        grade_file.write(str(correct_list[i]) + ',')
+        grade_file.write(str(correct_list[i]+1) + ',')
     grade_file.write(")\n")
     grade_file.write(f"Wrong：{wrong_num}(")
     for i in wrong_list:
-        grade_file.write(str(wrong_list[i]) + ',')
+        grade_file.write(str(wrong_list[i]+1) + ',')
     grade_file.write(")\n")
     fp.file_close(grade_file)
 
 if __name__ == '__main__':
-    parser = fp.argparse.ArgumentParser()
+    proofread_the_questions(fp.const_question_path, fp.const_answer_path, None)
 
 
 

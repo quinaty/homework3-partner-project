@@ -13,7 +13,7 @@ def read_file_from_args():
     #分别读取问题、答案文件的路径
     parser.add_argument('question_file','-e' ,type=str)
     parser.add_argument('answer_file','-a',type=str)
-    parser.add_argument('grade_file',type=str)
+    parser.add_argument('grade_file','-g',type=str)
 
     args = parser.parse_args()
     return [args.question_file, args.answer_file, args.grade_file]
