@@ -2,6 +2,9 @@ import unittest
 import tempfile
 import os
 import equation as eq
+import generate as ge
+import file_processor as fp
+import main as m
 
 # 导入需要测试的函数
 from file_processor import (
@@ -89,6 +92,75 @@ class TestBuildTree(unittest.TestCase):
         build_tree(op_stack, num_stack)
         self.assertEqual(len(num_stack), 1)
         self.assertEqual(num_stack[0].value, eq.Operators.ADD)
+
+
+class TestGenerate(unittest.TestCase):
+    def setUp(self):
+        self.test_dir = tempfile.TemporaryDirectory()
+        self.test_files = {
+            'question.txt': '',
+            'answer.txt': '',
+            'exercise.txt': '',
+        }
+        for filename, content in self.test_files.items():
+            path = os.path.join(self.test_dir.name, filename)
+            with open(path, 'w', encoding='utf-8') as f:
+                f.write(content)
+
+    def test_generate(self):
+        question_path = os.path.join(self.test_dir.name, 'question.txt')
+        answer_path = os.path.join(self.test_dir.name, 'answer.txt')
+        exercise_path = os.path.join(self.test_dir.name, 'exercise.txt')
+
+        es = ge.generate_equations(10, 4, 2,exercise_path)
+        es.print_equation_set()
+        for answer in es.answer_dict.values():
+            fp.file_write(answer_path, str(answer) + '\n')
+
+        n = 0
+        for equation in es.equation_list:
+            fp.equation_write(equation, question_path, n)
+            n += 1
+
+        self.clean_up()
+
+    def clean_up(self):
+        self.test_dir.cleanup()
+
+class TestProofs(unittest.TestCase):
+    def setUp(self):
+        self.test_dir = tempfile.TemporaryDirectory()
+        self.test_files = {
+            'question.txt': """12. 1 / 1/8 + 1 + 1/2
+13. 4 - 2 + 1'1/2 + 0
+14. ( 5 * 3 ) * ( 8 - 0 )
+15. 7 + 0 + 2/3 + 2/7
+16. ( 4 * 1 ) * ( 7 + 2 )""",
+            'answer.txt': """11.  3
+12.  9'1/2
+13.  3'1/2
+14.  120
+15.  7'20/21""",
+            'grade.txt': '',
+        }
+        for filename, content in self.test_files.items():
+            path = os.path.join(self.test_dir.name, filename)
+            with open(path, 'w', encoding='utf-8') as f:
+                f.write(content)
+
+    def test_proofs(self):
+        question_path = os.path.join(self.test_dir.name, 'question.txt')
+        answer_path = os.path.join(self.test_dir.name, 'answer.txt')
+        grade_path = os.path.join(self.test_dir.name, 'grade.txt')
+
+        m.proofread_the_questions(question_path, answer_path, grade_path)
+
+        file_data = fp.file_open(grade_path)
+        print(file_data.read())
+        fp.file_close(file_data)
+
+        self.test_dir.cleanup()
+
 
 if __name__ == '__main__':
     unittest.main()
