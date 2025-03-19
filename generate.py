@@ -41,7 +41,7 @@ class Generator:
 
             return node
 
-def generate_equations(r, limit,n):
+def generate_equations(r, limit,n,exercise_path = None):
 
     equation_set = list()
     answer_set = dict()
@@ -62,8 +62,10 @@ def generate_equations(r, limit,n):
     es = eq.EquationSet(equation_set, answer_set)
 
     i = 0
+    if not exercise_path:
+        exercise_path = fp.const_exercises_path
     for equation in es.answer_dict.keys():
-        fp.equation_write(equation, fp.const_exercises_path, i+1)
+        fp.equation_write(equation, exercise_path, i+1)
         i += 1
 
     return es
