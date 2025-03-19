@@ -52,29 +52,33 @@ def proofread_the_questions(question_path, answer_path, grade_path):
             correct_list.append(i)
 
     grade_file.write(f"Correct：{correct_num}(")
-    for i in correct_list:
-        grade_file.write(str(correct_list[i]+1) + ',')
+    for num in correct_list:
+        grade_file.write(str(num+1) + ',')
     grade_file.write(")\n")
     grade_file.write(f"Wrong：{wrong_num}(")
-    for i in wrong_list:
-        grade_file.write(str(wrong_list[i]+1) + ',')
+    for num in wrong_list:
+        grade_file.write(str(num+1) + ',')
     grade_file.write(")\n")
     fp.file_close(grade_file)
 
 if __name__ == '__main__':
-    args = get_cli_arguments()
+    # args = get_cli_arguments()
+    # if args.check:
+    #     # 批改答案模式
+    #     proofread_the_questions(args.question_file,
+    #                             args.answer_file,
+    #                             args.grade_file)
+    # elif args.generate:
+    #     # 生成题目模式
+    #     ge.generate_equations(args.range,
+    #                           args.limit,
+    #                           args.number)
 
-    if args.check:
-        # 批改答案模式
-        proofread_the_questions(args.question_file,
-                                args.answer_file,
-                                args.grade_file)
-    elif args.generate:
-        # 生成题目模式
-        ge.generate_equations(args.range,
-                              args.limit,
-                              args.number)
+    proofread_the_questions(fp.const_question_path,
+                                fp.const_answer_path,
+                                fp.const_grade_path)
 
+    ge.generate_equations(10, 4, 1000)
 
 
 

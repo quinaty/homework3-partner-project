@@ -174,8 +174,9 @@ class EquationNode:
             return Numeric(1, -1)
         #对结果进行化简
         common_divisor = greatest_common_divisor(result.numerator, result.denominator)
-        result.numerator //= common_divisor
-        result.denominator //= common_divisor
+        if common_divisor != 0:
+            result.numerator //= common_divisor
+            result.denominator //= common_divisor
         return result
 
     def compare(self, other_node):
