@@ -76,7 +76,7 @@ def equation_write(equation,file_path,index):
     file.write(str(index) + '. ')
     equation.print_equation(0, equation.value.get_type(), file)
     file.write('= ')
-    file.write(str(equation.evaluate().print_numberic()))
+    file.write(str(equation.evaluate().print_numeric()))
     file.write('\n')
     file_close(file)
 
@@ -95,11 +95,11 @@ def single_numeric_read(answer_txt):
         an = re.sub(r'\D', ' ', answer_txt)
         num_list = an.split()
         if len(num_list) == 1:
-            return eq.Numberic(1, int(num_list[0]))
+            return eq.Numeric(1, int(num_list[0]))
         elif len(num_list) == 2:
-            return eq.Numberic(int(num_list[1]), int(num_list[0]))
+            return eq.Numeric(int(num_list[1]), int(num_list[0]))
         else:
-            return eq.Numberic(int(num_list[2]), int(num_list[1]) + int(num_list[0]) * int(num_list[2]))
+            return eq.Numeric(int(num_list[2]), int(num_list[1]) + int(num_list[0]) * int(num_list[2]))
 
 
 def answer_read(answer_path):
@@ -162,7 +162,7 @@ def question_read(question_path):
                 tokens.append(token)
         #使用双栈法构建表达式树
         for token in tokens:
-            if isinstance(token, eq.Numberic):
+            if isinstance(token, eq.Numeric):
                 num_stack.append(eq.EquationNode(token, None, None))#数字直接入栈
             elif token == '(':
                 op_stack.append(token)#左括号入栈
@@ -177,8 +177,8 @@ def question_read(question_path):
 
         while op_stack:#栈非空时，将剩余运算符出栈，直到栈空
                 build_tree(op_stack, num_stack)
-
-        question_set.append( num_stack[0])
+        num_stack[0].normalize()
+        question_set.append( num_stack[0] )
 
     return question_set
 
@@ -203,7 +203,7 @@ if __name__ == '__main__':
     question_set = question_read(const_question_path)
 
     for answer in answer_set:
-        print(answer.print_numberic())
+        print(answer.print_numeric())
 
     for question in question_set:
         print(question.print_equation(0, question.value.get_type()))

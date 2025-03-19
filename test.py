@@ -87,8 +87,8 @@ class TestBuildTree(unittest.TestCase):
     def test_build_addition_tree(self):
         op_stack = ['+']
         num_stack = [
-            eq.EquationNode(eq.Numberic(1, 3), None, None),
-            eq.EquationNode(eq.Numberic(1, 4), None, None)]
+            eq.EquationNode(eq.Numeric(1, 3), None, None),
+            eq.EquationNode(eq.Numeric(1, 4), None, None)]
         build_tree(op_stack, num_stack)
         self.assertEqual(len(num_stack), 1)
         self.assertEqual(num_stack[0].value, eq.Operators.ADD)
@@ -160,6 +160,38 @@ class TestProofs(unittest.TestCase):
         fp.file_close(file_data)
 
         self.test_dir.cleanup()
+#去重测试
+class TestDeduplication(unittest.TestCase):
+    def setUp(self):
+        self.test_dir = tempfile.TemporaryDirectory()
+        self.test_files = {
+            'question1.txt': """1. 1 / 1/8 + 1 + 1/2
+     2.4 - 2 + 1'1/2 + 0
+     3.( 5 * 3 ) * ( 8 - 0 )
+     4.7 + 0 + 2/3 + 2/7""",
+            'question2.txt': """1. 1 / 1/8 + 1 + 1/2
+     2.1'1/2 + 0 + 4 - 2 
+     3.( 8 / 1'2/5 ) / ( 4 * 2'1/2 )
+     4.( 6 * 2/10 ) * ( 9 - 7 )""",
+        }
+        for filename, content in self.test_files.items():
+            path = os.path.join(self.test_dir.name, filename)
+            with open(path, 'w', encoding='utf-8') as f:
+                f.write(content)
+
+    def test_deduplication(self):
+        question_path1 = os.path.join(self.test_dir.name, 'question1.txt')
+        question_path2 = os.path.join(self.test_dir.name, 'question2.txt')
+
+        questions1 = fp.question_read(question_path1)
+        questions2 = fp.question_read(question_path2)
+
+        for q1 in questions1:
+            if ge.deduplication(questions2, q1):
+                print("重复")
+
+        self.test_dir.cleanup()
+
 
 
 if __name__ == '__main__':

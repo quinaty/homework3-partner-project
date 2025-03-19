@@ -17,8 +17,9 @@ class Generator:
         if random.random() < 0.7:
             denominator = 1
 
-        numeric = eq.Numberic(denominator, numerator)
+        numeric = eq.Numeric(denominator, numerator)
         return numeric
+
 
     def generate_equation_tree(self,depth):
         if depth == 0:
@@ -41,11 +42,19 @@ class Generator:
 
             return node
 
+def deduplication( equation_set, check_eq):
+        for generated_equation in equation_set:
+            if (generated_equation.get_equation_str() == check_eq.get_equation_str()
+                    and generated_equation.evaluate().get_value() == check_eq.evaluate().get_value()):
+                return True
+        return False
+
 def generate_equations(r, limit,n,exercise_path = None):
 
     equation_set = list()
     answer_set = dict()
     g = Generator(r, limit)
+
 
     i = 0
     while i < n:
@@ -54,9 +63,9 @@ def generate_equations(r, limit,n,exercise_path = None):
         tree = g.generate_equation_tree(depth)
         tree.normalize()
         answer = tree.evaluate()
-        if answer.get_value() > 0:
+        if answer.get_value() > 0 and not deduplication(equation_set, answer_set, tree):
             equation_set.append(tree)
-            answer_set[tree] = answer.print_numberic()
+            answer_set[tree] = answer.print_numeric()
             i += 1
 
     es = eq.EquationSet(equation_set, answer_set)
@@ -84,4 +93,4 @@ if __name__ == '__main__':
 
 
         for answer in fp.answer_read(fp.const_answer_path):
-            print(answer.print_numberic())
+            print(answer.print_numeric())
