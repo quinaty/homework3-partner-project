@@ -110,12 +110,12 @@ class EquationNode:
                 print(line,end=' ')
 
         else:
-            oprator = self.value.value
+            operator = self.value.value
 
             if file:
-                file.write(oprator+' ')
+                file.write(operator+' ')
             else :
-                print(oprator,end=' ')
+                print(operator,end=' ')
 
         if self.right:
             self.right.print_equation(1,self.value.get_type() + op,file)
