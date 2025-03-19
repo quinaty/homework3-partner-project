@@ -63,7 +63,7 @@ def generate_equations(r, limit,n,exercise_path = None):
         tree = g.generate_equation_tree(depth)
         tree.normalize()
         answer = tree.evaluate()
-        if answer.get_value() > 0 and not deduplication(equation_set, answer_set, tree):
+        if answer.get_value() > 0 and not deduplication(equation_set, tree):
             equation_set.append(tree)
             answer_set[tree] = answer.print_numeric()
             i += 1
