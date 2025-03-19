@@ -107,6 +107,7 @@ def answer_read(answer_path):
     if answer_data is None:
         return None
     else:
+        answer_data = re.sub(r'\d+\.', '', answer_data)
         answer_list = answer_data.split('\n')
     # 去除空行
     while '' in answer_list:
@@ -115,7 +116,7 @@ def answer_read(answer_path):
     answer_set = list()
 
     for answer in answer_list:
-        an = single_numeric_read(answer)
+        an = single_numeric_read(answer.strip())
         if an:
             answer_set.append(an)
         else:
@@ -129,6 +130,7 @@ def question_read(question_path):
     if question_data is None:
         return None
     else:
+        question_data = re.sub(r'\d+\.', '', question_data)
         question_list = question_data.split('\n')
     # 去除空行
     while '' in question_list:
@@ -146,6 +148,7 @@ def question_read(question_path):
 
     # 构建表达式树
     for question in question_list:
+        question = question.strip()
         qu = re.findall(pattern, question, re.VERBOSE)
 
         #分离运算符和数字
@@ -195,7 +198,15 @@ def build_tree(op_stack, num_stack):
 
 
 
+if __name__ == '__main__':
+    answer_set = answer_read(const_answer_path)
+    question_set = question_read(const_question_path)
 
+    for answer in answer_set:
+        print(answer.print_numberic())
+
+    for question in question_set:
+        print(question.print_equation(0, question.value.get_type()))
 
 
 

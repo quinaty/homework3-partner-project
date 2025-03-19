@@ -72,14 +72,14 @@ def generate_equations(r, limit,n):
 
 
 if __name__ == '__main__':
-     es = generate_equations(10, 4, 2)
-       # es.print_equation_set()
-       #  for answer in es.answer_dict.values():
-       #      fp.file_write(fp.const_answer_path, str(answer)+'\n')
-       #
-       #  for equation in es.equation_list:
-       #      fp.equation_write(equation, fp.const_question_path)
+        es = generate_equations(10, 4, 2)
+        es.print_equation_set()
+        for answer in es.answer_dict.values():
+            fp.file_write(fp.const_answer_path, str(answer)+'\n')
+
+        for equation in es.equation_list:
+            fp.equation_write(equation, fp.const_question_path)
 
 
-        # for answer in fp.answer_read(fp.const_answer_path):
-        #     print(answer.print_numberic())
+        for answer in fp.answer_read(fp.const_answer_path):
+            print(answer.print_numberic())
