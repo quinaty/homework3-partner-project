@@ -62,23 +62,19 @@ def proofread_the_questions(question_path, answer_path, grade_path):
     fp.file_close(grade_file)
 
 if __name__ == '__main__':
-    # args = get_cli_arguments()
-    # if args.check:
-    #     # 批改答案模式
-    #     proofread_the_questions(args.question_file,
-    #                             args.answer_file,
-    #                             args.grade_file)
-    # elif args.generate:
-    #     # 生成题目模式
-    #     ge.generate_equations(args.range,
-    #                           args.limit,
-    #                           args.number)
+    args = get_cli_arguments()
+    if args.check:
+        # 批改答案模式
+        proofread_the_questions(args.question_file,
+                                args.answer_file,
+                                args.grade_file)
+    elif args.generate:
+        # 生成题目模式
+        ge.generate_equations(args.range,
+                              args.limit,
+                              args.number)
 
-    proofread_the_questions(fp.const_question_path,
-                                fp.const_answer_path,
-                                fp.const_grade_path)
 
-    ge.generate_equations(10, 4, 1000)
 
 
 

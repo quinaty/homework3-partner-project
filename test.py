@@ -192,6 +192,14 @@ class TestDeduplication(unittest.TestCase):
 
         self.test_dir.cleanup()
 
+class TestMain(unittest.TestCase):
+    def test_main(self):
+        m.proofread_the_questions(fp.const_question_path,
+                            fp.const_answer_path,
+                            fp.const_grade_path)
+
+        ge.generate_equations(10, 4, 1000)
+
 
 
 if __name__ == '__main__':
